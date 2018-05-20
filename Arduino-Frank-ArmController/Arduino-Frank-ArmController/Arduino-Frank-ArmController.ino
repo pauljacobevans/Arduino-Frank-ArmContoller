@@ -16,16 +16,13 @@
 *
 * by www.pauljacobevans.com
 *
-* Version History:
-*
-* v0.8 - 2018/5/18: Inital Release
-* v0.9 - 2018/5/19: Issues still with the speed throttling, but the double-take seems to be fixed now.
 */
 // ================================================
 // == Variable Declarations
 // ================================================
 
 // Arduino I/O Pin Declarations
+// rcPin[0] = a PWM 3-way toggle switch on the RC controller, rcPon[1] = a momentary push button for the attack.
 
 const int rcPin[2] = { 3, 2 }; // Disengage, Engage, Deploy Arm RC pin  ;;;  Attack Arm  // (RC input pins)
 const int servo[4] = { 5, 6, 9, 10 }; // servoDoor ;;; servoBicep  ;;; servoTricep  ;;;  servoWrist  // (PWM servo output pins)
@@ -36,7 +33,7 @@ const int attackArm[4] = { 1500, 1000, 600, 1200 }; // servoDoor, servoBicep, se
 
 // Servo Speed Changes
 
-const bool slowMove[4] = { 0, 0, 0, 0 }; // Choose which moves are throttled [ Disengage, Engage, Deploy, Attack! ]
+const bool slowMove[3] = { 0, 0, 0 }; // Choose which moves are throttled [ Engage, Deploy, Attack! ]
 
 const int delayServo = 50;  // servoBicep, servoTricep, servoWrist delay (ms) during movement (between steps)
 const int stepsServo = 20;  // servoBicep, servoTricep, servoWrist # of steps to make per move
@@ -68,7 +65,7 @@ void setup() {
 	Serial.begin(9600);
 	pinMode(rcPin[0], INPUT);
 	pinMode(rcPin[1], INPUT);
-	Serial.println("Starting Tra$h-03 Arm Controller!");
+	Serial.println("Starting Frank! the Arduino Arm Controller!");
 }
 
 void loop() {
@@ -142,53 +139,63 @@ void loop() {
 }
 
 void moveStep(int w, int x, int y, int z) {
-	armMoving = true;
 	int armNew[4] = { w, x, y, z };
 	int armCurrent[4];
 	int armTotal[4];
 	float armStep[4];
+	int rcCheck[2];
+
 	for (int i = 0; i < 4; i++)
 	{
 		armCurrent[i] = pulseIn(servo[i], HIGH, 90000);
 		armTotal[i] = armNew[i] - armCurrent[i];
 		armStep[i] = float(armTotal[i]) / stepsServo;
-		Serial.println("Begingin Math Loop");
 	}
+
 	for (int j = 0; j < stepsServo; j++)
 	{
-		int armMove = 0;
 		for (int k = 0; k < 4; k++)
 		{
-			int armNow = pulseIn(servo[k], HIGH, 90000);
-			int armRange = armNew[k] - armNow;
-			if ((armRange < 10) && (armRange > -10))
+			armCurrent[k] = armCurrent[k] + armStep[k];
+		}
+		servoDoor.writeMicroseconds(armCurrent[0]);
+		servoBicep.writeMicroseconds(armCurrent[1]);
+		servoTricep.writeMicroseconds(armCurrent[2]);
+		servoWrist.writeMicroseconds(armCurrent[3]);
+
+		delay(delayServo);
+
+		rcCheck[0] = pulseIn(rcPin[0], HIGH, 90000);
+		rcCheck[1] = pulseIn(rcPin[1], HIGH, 90000);
+		
+		if (rcCheck[1] < 1750)
+		{
+			if (rcCheck[0] > 1750)
 			{
-				armMove++;
+				statusArm = 2;
+				return;
 			}
 			else
 			{
-				armCurrent[k] = armCurrent[k] + armStep[k];
+				if (rcCheck[0] < 1250)
+				{
+					statusArm = 0;
+					return;
+				}
+				else
+				{
+					statusArm = 1;
+					return;
+				}
 			}
 		}
-		if (armMove < 4)
-		{
-			servoDoor.writeMicroseconds(armCurrent[0]);
-			servoBicep.writeMicroseconds(armCurrent[1]);
-			servoTricep.writeMicroseconds(armCurrent[2]);
-			servoWrist.writeMicroseconds(armCurrent[3]);
-		}
-		else
-		{
-			servoDoor.writeMicroseconds(armNew[0]);
-			servoBicep.writeMicroseconds(armNew[1]);
-			servoTricep.writeMicroseconds(armNew[2]);
-			servoWrist.writeMicroseconds(armNew[3]);
-			Serial.println("Last Servo Move");
-		}
-		Serial.println("Step Loop");
-		delay(delayServo);
 	}
-	armMoving = false;
+
+	servoDoor.writeMicroseconds(w);
+	servoBicep.writeMicroseconds(x);
+	servoTricep.writeMicroseconds(y);
+	servoWrist.writeMicroseconds(z);
+
 }
 
 void moveNow(int w, int x, int y, int z) {
