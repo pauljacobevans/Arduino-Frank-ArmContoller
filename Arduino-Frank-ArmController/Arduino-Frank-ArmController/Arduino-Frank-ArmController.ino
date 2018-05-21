@@ -82,7 +82,7 @@ void loop() {
 		servoBicep.attach(servo[1]);
 		servoTricep.attach(servo[2]);
 		servoWrist.attach(servo[3]);
-		if (slowMove[1])
+		if (slowMove[0])
 		{
 			moveStep(engageArm[0], engageArm[1], engageArm[2], engageArm[3]);
 		}
@@ -92,7 +92,7 @@ void loop() {
 		}
 		break;
 	case 2:
-		if (slowMove[2])
+		if (slowMove[1])
 		{
 			moveStep(deployArm[0], deployArm[1], deployArm[2], deployArm[3]);
 		}
@@ -102,7 +102,7 @@ void loop() {
 		}
 		break;
 	case 3:
-		if (slowMove[3])
+		if (slowMove[2])
 		{
 			moveStep(attackArm[0], attackArm[1], attackArm[2], attackArm[3]);
 		}
