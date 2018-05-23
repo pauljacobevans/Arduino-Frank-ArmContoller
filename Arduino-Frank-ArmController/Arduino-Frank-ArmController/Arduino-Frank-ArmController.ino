@@ -59,7 +59,7 @@ Servo servoWrist;
 int statusArm = 0;
 int rcPrep = 0;
 int rcFire = 0;
-bool armMoving = false;
+int armThere[2] = { 0, 0 };
 
 void setup() {
 	Serial.begin(9600);
@@ -78,38 +78,47 @@ void loop() {
 		servoWrist.detach();
 		break;
 	case 1:
-		servoDoor.attach(servo[0]);
-		servoBicep.attach(servo[1]);
-		servoTricep.attach(servo[2]);
-		servoWrist.attach(servo[3]);
-		if (slowMove[0])
+		if (armThere[0] != 1 || armThere[1] = 0)
 		{
-			moveStep(engageArm[0], engageArm[1], engageArm[2], engageArm[3]);
-		}
-		else
-		{
-			moveNow(engageArm[0], engageArm[1], engageArm[2], engageArm[3]);
+			servoDoor.attach(servo[0]);
+			servoBicep.attach(servo[1]);
+			servoTricep.attach(servo[2]);
+			servoWrist.attach(servo[3]);
+			if (slowMove[0])
+			{
+				moveStep(engageArm[0], engageArm[1], engageArm[2], engageArm[3], 1);
+			}
+			else
+			{
+				moveNow(engageArm[0], engageArm[1], engageArm[2], engageArm[3], 1);
+			}
 		}
 		break;
 	case 2:
-		if (slowMove[1])
+		if (armThere[0] != 2 || armThere[1] = 0)
 		{
-			moveStep(deployArm[0], deployArm[1], deployArm[2], deployArm[3]);
-		}
-		else
-		{
-			moveNow(deployArm[0], deployArm[1], deployArm[2], deployArm[3]);
+			if (slowMove[1])
+			{
+				moveStep(deployArm[0], deployArm[1], deployArm[2], deployArm[3], 2);
+			}
+			else
+			{
+				moveNow(deployArm[0], deployArm[1], deployArm[2], deployArm[3], 2);
+			}
 		}
 		break;
 	case 3:
-		if (slowMove[2])
+		if (armThere[0] != 3 || armThere[1] = 0)
 		{
-			moveStep(attackArm[0], attackArm[1], attackArm[2], attackArm[3]);
-		}
-		else
+			if (slowMove[2])
+			{
+				moveStep(attackArm[0], attackArm[1], attackArm[2], attackArm[3], 3);
+			}
+			else
+			{
+				moveNow(attackArm[0], attackArm[1], attackArm[2], attackArm[3], 3);
+			}
 		{
-			moveNow(attackArm[0], attackArm[1], attackArm[2], attackArm[3]);
-		}
 		break;
 	}
 
@@ -138,7 +147,9 @@ void loop() {
 
 }
 
-void moveStep(int w, int x, int y, int z) {
+void moveStep(int w, int x, int y, int z, int v) {
+	armThere[0] = v;
+	armThere[1] = 0;
 	int armNew[4] = { w, x, y, z };
 	int armCurrent[4];
 	int armTotal[4];
@@ -195,12 +206,15 @@ void moveStep(int w, int x, int y, int z) {
 	servoBicep.writeMicroseconds(x);
 	servoTricep.writeMicroseconds(y);
 	servoWrist.writeMicroseconds(z);
-
+	armThere[1] = 1;
 }
 
-void moveNow(int w, int x, int y, int z) {
+void moveNow(int w, int x, int y, int z, int v) {
+	armThere[0] = v;
+	armThere[1] = 0;
 	servoDoor.writeMicroseconds(w);
 	servoBicep.writeMicroseconds(x);
 	servoTricep.writeMicroseconds(y);
 	servoWrist.writeMicroseconds(z);
+	armThere[1] = 1;
 }
