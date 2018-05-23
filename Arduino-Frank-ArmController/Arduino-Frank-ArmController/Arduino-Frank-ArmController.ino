@@ -168,26 +168,26 @@ void moveStep(int w, int x, int y, int z) {
 		rcCheck[0] = pulseIn(rcPin[0], HIGH, 90000);
 		rcCheck[1] = pulseIn(rcPin[1], HIGH, 90000);
 		
-		if (rcCheck[1] < 1750)
+		if (rcPrep > 1250)
 		{
-			if (rcCheck[0] > 1750)
+			if (rcPrep > 1750)
 			{
-				statusArm = 2;
-				return;
+				if (rcFire < 1750)
+				{
+					statusArm = 2;
+					return;
+				}
 			}
 			else
 			{
-				if (rcCheck[0] < 1250)
-				{
-					statusArm = 0;
-					return;
-				}
-				else
-				{
-					statusArm = 1;
-					return;
-				}
+				statusArm = 1;
+				return;
 			}
+		}
+		else
+		{
+			statusArm = 0;
+			return;
 		}
 	}
 
