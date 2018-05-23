@@ -24,7 +24,7 @@
 // Arduino I/O Pin Declarations
 // rcPin[0] = a PWM 3-way toggle switch on the RC controller, rcPon[1] = a momentary push button for the attack.
 
-const int rcPin[2] = { 3, 2 }; // Disengage, Engage, Deploy Arm RC pin  ;;;  Attack Arm  // (RC input pins)
+const int rcPin[2] = { 2, 3 }; // Disengage, Engage, Deploy Arm RC pin  ;;;  Attack Arm  // (RC input pins)
 const int servo[4] = { 5, 6, 9, 10 }; // servoDoor ;;; servoBicep  ;;; servoTricep  ;;;  servoWrist  // (PWM servo output pins)
 
 // Servo Final Position
