@@ -12,7 +12,8 @@
 * 2000 = Full clockwise
 *
 * Note: look up the specs on the servos, as some DO allow outside of these ranges (could be as low as
-* ~700 and as high as ~2300.  Servo documentation should give final clarification.
+* ~700 and as high as ~2300.  In fact, the actual PWM frame technically has room for any value between
+* 0 - 19,999.  The specific servo documentation should give final clarification on final values.
 *
 * by www.pauljacobevans.com
 *
