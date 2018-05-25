@@ -95,11 +95,11 @@ void loop() {
 				moveNow(engageArm[1], engageArm[2], engageArm[3], 1);
 			}
 			servoDoor.writeMicroseconds(engageArm[0]);
-			door = pulseIn(servo[0], HIGH, 90000);
+			door = servoDoor.readMicroseconds;
 			while (door != engageArm[0])
 			{
 				delay(5);
-				door = pulseIn(servo[0], HIGH, 90000);
+				door = servoDoor.readMicroseconds;
 			}
 		}
 		break;
@@ -107,11 +107,11 @@ void loop() {
 		if (armThere[0] != 2 || armThere[1] = 0)
 		{
 			servoDoor.writeMicroseconds(deployArm[0]);
-			door = pulseIn(servo[0], HIGH, 90000);
+			door = servoDoor.readMicroseconds;
 			while (door != deployArm[0])
 			{
 				delay(5);
-				door = pulseIn(servo[0], HIGH, 90000);
+				door = servoDoor.readMicroseconds;
 			}
 			if (slowMove[1])
 			{
