@@ -116,7 +116,7 @@ void loop() {
 		{
 			servoDoor.writeMicroseconds(deployArm[0]);
 			door = servoDoor.readMicroseconds;
-			if (door <= deployArm[0])
+			if (door >= deployArm[0])
 			{
 				doorOpen = true;
 				if (slowMove[1])
