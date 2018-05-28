@@ -58,6 +58,7 @@ Servo servoTricep;
 Servo servoWrist;
 
 int statusArm = 0;
+bool doorOpen = false;
 int rcPrep = 0;
 int rcFire = 0;
 int door = 0;
@@ -101,6 +102,12 @@ void loop() {
 			if (bicep >= engageArm[1] && tricep <= engageArm[2])
 			{
 				servoDoor.writeMicroseconds(engageArm[0]);
+				door = servoDoor.readMicroseconds;
+				if (door <= engageArm[0])
+				{
+					doorOpen = false;
+					armThere[1] = 1;
+				}
 			}
 		}
 		break;
@@ -111,6 +118,7 @@ void loop() {
 			door = servoDoor.readMicroseconds;
 			if (door <= deployArm[0])
 			{
+				doorOpen = true;
 				if (slowMove[1])
 				{
 					moveStep(deployArm[1], deployArm[2], deployArm[3], 2);
@@ -119,6 +127,7 @@ void loop() {
 				{
 					moveNow(deployArm[1], deployArm[2], deployArm[3], 2);
 				}
+				armThere[1] = 1;
 			}
 		}
 		break;
@@ -133,6 +142,7 @@ void loop() {
 			{
 				moveNow(attackArm[0], attackArm[1], attackArm[2], 3);
 			}
+			armThere[1] = 1;
 		{
 		break;
 	}
@@ -219,7 +229,6 @@ void moveStep(int x, int y, int z, int v) {
 	servoBicep.writeMicroseconds(x);
 	servoTricep.writeMicroseconds(y);
 	servoWrist.writeMicroseconds(z);
-	armThere[1] = 1;
 }
 
 void moveNow(int x, int y, int z, int v) {
@@ -228,5 +237,4 @@ void moveNow(int x, int y, int z, int v) {
 	servoBicep.writeMicroseconds(x);
 	servoTricep.writeMicroseconds(y);
 	servoWrist.writeMicroseconds(z);
-	armThere[1] = 1;
 }
