@@ -61,6 +61,8 @@ int statusArm = 0;
 int rcPrep = 0;
 int rcFire = 0;
 int door = 0;
+int bicep = 0;
+int tricep = 0;
 int armThere[2] = { 0, 0 };
 
 void setup() {
@@ -94,12 +96,11 @@ void loop() {
 			{
 				moveNow(engageArm[1], engageArm[2], engageArm[3], 1);
 			}
-			servoDoor.writeMicroseconds(engageArm[0]);
-			door = servoDoor.readMicroseconds;
-			while (door != engageArm[0])
+			bicep = servoBicep.readMicroseconds(engageArm[1]);
+			tricep = servoBicep.readMicroseconds(engageArm[2]);
+			if (bicep >= engageArm[1] && tricep <= engageArm[2])
 			{
-				delay(5);
-				door = servoDoor.readMicroseconds;
+				servoDoor.writeMicroseconds(engageArm[0]);
 			}
 		}
 		break;
@@ -108,18 +109,16 @@ void loop() {
 		{
 			servoDoor.writeMicroseconds(deployArm[0]);
 			door = servoDoor.readMicroseconds;
-			while (door != deployArm[0])
+			if (door <= deployArm[0])
 			{
-				delay(5);
-				door = servoDoor.readMicroseconds;
-			}
-			if (slowMove[1])
-			{
-				moveStep(deployArm[1], deployArm[2], deployArm[3], 2);
-			}
-			else
-			{
-				moveNow(deployArm[1], deployArm[2], deployArm[3], 2);
+				if (slowMove[1])
+				{
+					moveStep(deployArm[1], deployArm[2], deployArm[3], 2);
+				}
+				else
+				{
+					moveNow(deployArm[1], deployArm[2], deployArm[3], 2);
+				}
 			}
 		}
 		break;
