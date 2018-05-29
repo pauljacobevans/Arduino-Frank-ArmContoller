@@ -124,8 +124,6 @@ void loop() {
 		break;
 	}
 
- Serial.println(servoDoor.readMicroseconds());
-
  doorCurrent = servoDoor.readMicroseconds();
 
 	rcPrep = pulseIn(rcPin[0], HIGH, 90000);
