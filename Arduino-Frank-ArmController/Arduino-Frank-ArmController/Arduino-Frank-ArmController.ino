@@ -62,69 +62,71 @@ int doorCurrent = 1502;
 int rcPrep = 0;
 int rcFire = 0;
 
-void setup() {
+void setup() 
+{
 	Serial.begin(9600);
 	pinMode(rcPin[0], INPUT);
 	pinMode(rcPin[1], INPUT);
 	Serial.println("Starting Frank! the Arduino Arm Controller!");
 }
 
-void loop() {
-
-	switch (statusArm) {
-	case 0:
-		servoDoor.detach();
-		servoBicep.detach();
-		servoTricep.detach();
-		servoWrist.detach();
-		break;
-	case 1:
-		servoDoor.attach(servo[0]);
-		servoBicep.attach(servo[1]);
-		servoTricep.attach(servo[2]);
-		servoWrist.attach(servo[3]);
-		if (slowMove[0])
-		{
-			moveStep(engageArm[1], engageArm[2], engageArm[3]);
-		}
-		else
-		{
-			moveNow(engageArm[1], engageArm[2], engageArm[3]);
-		}
-		if (doorCurrent < engageArm[0])
-    {
-      delay(300);
-		  servoDoor.writeMicroseconds(engageArm[0]);
-    }
-		break;
-	case 2:
-		if (doorCurrent > deployArm[0])
-    {
-			servoDoor.writeMicroseconds(deployArm[0]);
-      delay(11000);
-    }
-		if (slowMove[1])
-		{
-			moveStep(deployArm[1], deployArm[2], deployArm[3]);
-		}
-		else
-		{
-			moveNow(deployArm[1], deployArm[2], deployArm[3]);
-		}
-		break;
-	case 3:
-		if (slowMove[2])
-		{
-			moveStep(attackArm[0], attackArm[1], attackArm[2]);
-		}
-		else
-		{
-			moveNow(attackArm[0], attackArm[1], attackArm[2]);
-		}
-		break;
+void loop() 
+{
+	switch (statusArm) 
+	{
+		case 0:
+			servoDoor.detach();
+			servoBicep.detach();
+			servoTricep.detach();
+			servoWrist.detach();
+			break;
+		case 1:
+			servoDoor.attach(servo[0]);
+			servoBicep.attach(servo[1]);
+			servoTricep.attach(servo[2]);
+			servoWrist.attach(servo[3]);
+			if (slowMove[0])
+			{
+				moveStep(engageArm[1], engageArm[2], engageArm[3]);
+			}
+			else
+			{
+				moveNow(engageArm[1], engageArm[2], engageArm[3]);
+			}
+			if (doorCurrent < engageArm[0])
+			{
+				delay(300);
+				servoDoor.writeMicroseconds(engageArm[0]);
+			}
+			break;
+		case 2:
+			if (doorCurrent > deployArm[0])
+			{
+				servoDoor.writeMicroseconds(deployArm[0]);
+				delay(11000);
+			}
+			if (slowMove[1])
+			{
+				moveStep(deployArm[1], deployArm[2], deployArm[3]);
+			}
+			else
+			{
+				moveNow(deployArm[1], deployArm[2], deployArm[3]);
+			}
+			break;
+		case 3:
+			if (slowMove[2])
+			{
+				moveStep(attackArm[0], attackArm[1], attackArm[2]);
+			}
+			else
+			{
+				moveNow(attackArm[0], attackArm[1], attackArm[2]);
+			}
+			break;
 	}
-
- doorCurrent = servoDoor.readMicroseconds();
+	
+	doorCurrent = servoDoor.readMicroseconds();
 
 	rcPrep = pulseIn(rcPin[0], HIGH, 90000);
 	rcFire = pulseIn(rcPin[1], HIGH, 90000);
@@ -148,10 +150,10 @@ void loop() {
 	{
 		statusArm = 0;
 	}
-
 }
 
-void moveStep(int x, int y, int z) {
+void moveStep(int x, int y, int z) 
+{
 	int armNew[3] = { x, y, z };
 	int armCurrent[3];
 	int armTotal[3];
@@ -171,7 +173,7 @@ void moveStep(int x, int y, int z) {
 		{
 			armCurrent[k] = armCurrent[k] + armStep[k];
 		}
-    servoTricep.writeMicroseconds(armCurrent[1]);
+    		servoTricep.writeMicroseconds(armCurrent[1]);
 		servoBicep.writeMicroseconds(armCurrent[0]);
 		servoWrist.writeMicroseconds(armCurrent[2]);
 
@@ -202,14 +204,14 @@ void moveStep(int x, int y, int z) {
 			return;
 		}
 	}
-
-  servoTricep.writeMicroseconds(y);
+  	servoTricep.writeMicroseconds(y);
 	servoBicep.writeMicroseconds(x);
 	servoWrist.writeMicroseconds(z);
 }
 
-void moveNow(int x, int y, int z) {
-  servoTricep.writeMicroseconds(y);
+void moveNow(int x, int y, int z) 
+{
+  	servoTricep.writeMicroseconds(y);
 	servoBicep.writeMicroseconds(x);
 	servoWrist.writeMicroseconds(z);
 }
