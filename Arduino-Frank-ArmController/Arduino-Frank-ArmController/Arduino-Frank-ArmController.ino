@@ -124,6 +124,12 @@ void loop()
 				moveNow(attackArm[0], attackArm[1], attackArm[2]);
 			}
 			break;
+    case 4:
+      if (doorCurrent > deployArm[0])
+      {
+        servoDoor.writeMicroseconds(deployArm[0]);
+      }
+      break;
 	}
 	
 	doorCurrent = servoDoor.readMicroseconds();
@@ -144,6 +150,10 @@ void loop()
 		else
 		{
 			statusArm = 1;
+      if (rcFire > 1750)
+      {
+        statusArm = 4;
+      }
 		}
 	}
 	else
